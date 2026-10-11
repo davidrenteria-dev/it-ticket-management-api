@@ -1,6 +1,8 @@
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
+
 from models import Ticket, TicketInfo
+
 
 def initialize_database():
     connection = sqlite3.connect("tickets.db")
@@ -26,7 +28,7 @@ def initialize_database():
     print("Database connection closed.")
     
 def create_ticket(ticket_info: TicketInfo) -> Ticket:
-    created_at = datetime.now().isoformat()
+    created_at = datetime.now(timezone.utc).isoformat()
     connection = sqlite3.connect("tickets.db")
     cursor = connection.cursor()
     
