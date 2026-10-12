@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, field_validator
 from datetime import datetime
 
 ALLOWED_CATEGORIES = {"VPN", "Network", "Tool Access", "Password", "Account", "Hardware", "Software", "Other"}
+ALLOWED_STATUS = {"Open", "In progress", "Resolved"}
 
 class TicketInfo(BaseModel):
     employee_id: int = Field(ge=1000000, le=9999999, description="Employee ID must be 7 digits")
@@ -32,3 +33,16 @@ class Ticket(BaseModel):
     status: str = Field(default="Open", description="Status of the ticket")
     created_at: str = Field(default_factory=lambda: datetime.now().isoformat(), description="Timestamp when the ticket was created")
     
+
+class TicketStatusUpdate(BaseModel):
+    status: str = Field(min_length=3, description="Status of the ticket")
+
+    @field_validator("status", mode="before")
+    @classmethod
+    def validate_status(cls, status: str) -> str:
+        if not status.strip():
+            raise ValueError("Status cannot be empty or whitespace")
+        if status.strip() not in ALLOWED_STATUS:
+            raise ValueError(f"Status must be one of {ALLOWED_STATUS}")
+        return status.strip()
+

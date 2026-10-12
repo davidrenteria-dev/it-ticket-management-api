@@ -3,9 +3,15 @@ from datetime import datetime, timezone
 
 from models import Ticket, TicketInfo
 
+TICKETS_DATABASE = "tickets.db"
+TEST_DATABASE = "test_tickets.db"
+
+def get_connection():
+    return sqlite3.connect(TICKETS_DATABASE)
+
 
 def initialize_database():
-    connection = sqlite3.connect("tickets.db")
+    connection = get_connection()
 
     print("Database connection established.")
 
@@ -29,7 +35,7 @@ def initialize_database():
     
 def create_ticket(ticket_info: TicketInfo) -> Ticket:
     created_at = datetime.now(timezone.utc).isoformat()
-    connection = sqlite3.connect("tickets.db")
+    connection = get_connection()
     cursor = connection.cursor()
     
     cursor.execute('''
@@ -49,7 +55,7 @@ def create_ticket(ticket_info: TicketInfo) -> Ticket:
     return ticket
 
 def return_ticket_by_id(ticket_id: int) -> Ticket | None:
-    connection = sqlite3.connect("tickets.db")
+    connection = get_connection()
     cursor = connection.cursor()
     cursor.execute('SELECT * FROM tickets WHERE ticket_id = ?', (ticket_id,))
     
@@ -64,7 +70,7 @@ def return_ticket_by_id(ticket_id: int) -> Ticket | None:
         return None
     
 def return_all_tickets() -> list[Ticket]:
-    connection = sqlite3.connect("tickets.db")
+    connection = get_connection()
     cursor = connection.cursor()
     cursor.execute('SELECT * FROM tickets')
     rows = cursor.fetchall()
@@ -78,7 +84,7 @@ def return_all_tickets() -> list[Ticket]:
     return tickets
 
 def update_ticket_status(ticket_id: int, new_status: str) -> Ticket | None:
-    connection = sqlite3.connect("tickets.db")
+    connection = get_connection()
     cursor = connection.cursor()
 
     cursor.execute(
@@ -105,4 +111,4 @@ if __name__ == "__main__":
     # ticket = return_ticket_by_id(1)
     # print(ticket.model_dump())
     # print(return_all_tickets())
-    print(update_ticket_status(new_status="In Progress", ticket_id=99))
+    print(update_ticket_status(new_status="In progress", ticket_id=99))
