@@ -4,7 +4,6 @@ from datetime import datetime, timezone
 from models import Ticket, TicketInfo
 
 TICKETS_DATABASE = "tickets.db"
-TEST_DATABASE = "test_tickets.db"
 
 def get_connection():
     return sqlite3.connect(TICKETS_DATABASE)
@@ -111,4 +110,4 @@ if __name__ == "__main__":
     # ticket = return_ticket_by_id(1)
     # print(ticket.model_dump())
     # print(return_all_tickets())
-    print(update_ticket_status(new_status="In progress", ticket_id=99))
+    print(update_ticket_status(new_status="In Progress", ticket_id=99))
