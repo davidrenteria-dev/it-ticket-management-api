@@ -96,6 +96,29 @@ def test_update_status(test_database):
     assert response_patch.status_code == 200
     assert client.get(f"/tickets/{ticket_id}").json()["status"] == "Resolved"
     
+def test_invalid_status_api(test_database):
+    ticket = {
+                "employee_id": 1000001,
+                "category": "Network",
+                "description": "This a test from API"
+            }
+    
+    response_post = client.post("/tickets", json=ticket)
+    ticket_id = response_post.json()["ticket_id"]
+    
+    assert response_post.status_code == 201
+    
+    response_patch = client.patch(f"/tickets/{ticket_id}", json={"status": "P"})
+    
+    assert response_patch.status_code == 422
+    assert client.get(f"/tickets/{ticket_id}").json()["status"] == "Open"
+    
+def test_update_nonexistent_ticket_api(test_database):
+    response = client.patch("/tickets/9999", json={"status": "In progress"})
+    
+    assert response.status_code == 404
+    assert response.json()["detail"] == 'Ticket with ID 9999 not found'
+    
     
     
     
