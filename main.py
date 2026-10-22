@@ -1,7 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from database import return_ticket_by_id, return_all_tickets, update_ticket_status
-
-from database import create_ticket
+from database import return_ticket_by_id, return_all_tickets, update_ticket_status, create_ticket
 from models import TicketInfo, Ticket, TicketStatusUpdate
 
 app = FastAPI()
@@ -21,10 +19,10 @@ def get_all_tickets():
     return tickets
 
 @app.get("/tickets/{ticket_id}", response_model=Ticket)
-def get_tickt(ticket_id: int):
+def get_ticket(ticket_id: int):
     ticket = return_ticket_by_id(ticket_id)
     if ticket is None:
-        http_exception = HTTPException(status_code=404, 
+        http_exception = HTTPException(status_code=404,
                                        detail=f"Ticket with ID {ticket_id} not found")
         raise http_exception
     return ticket
@@ -33,7 +31,7 @@ def get_tickt(ticket_id: int):
 @app.patch("/tickets/{ticket_id}", response_model=Ticket)
 def update_status(ticket_id: int, new_status: TicketStatusUpdate):
     updated_ticket = update_ticket_status(ticket_id=ticket_id, new_status=new_status.status)
-    if updated_ticket == None:
+    if updated_ticket is None:
         http_exception = HTTPException(status_code=404, detail=f"Ticket with ID {ticket_id} not found")
         raise http_exception
     return updated_ticket

@@ -8,7 +8,7 @@ def test_valid_ticket_status():
 def test_invalid_ticket_status():
     with pytest.raises(ValueError):
         TicketStatusUpdate(status="Banana")
-        
+
 def test_status_whitespaces():
     ticket = TicketStatusUpdate(status="     Resolved     ")
     assert ticket.status == "Resolved"
